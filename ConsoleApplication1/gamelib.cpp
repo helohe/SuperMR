@@ -97,6 +97,10 @@ void Player::setxvel(double vel) {
 	vel_x = vel;
 }
 
+void Player::hit() {
+
+}
+
 
 Enemy::Enemy(GameInfo* gameinfo, int x, int y) : Block(gameinfo, x, y) {
 	vel_x = -.05;
@@ -108,7 +112,17 @@ void Enemy::draw() {
 		TCODConsole::root->putChar(get_drawX(), get_drawY(), '^');
 }
 void Enemy::collision(double old_x, double old_y, Block* block) {
-
+	if (block == gameinfo->player) {
+		if ((int)old_y == (int)y - 1 && (int)old_x == (int)x) {
+			gameinfo->map.erase({ (int)x, (int)y });
+			gameinfo->map[{(int)x, (int)y}] = block;
+			gameinfo->player->jumping = 0;
+			gameinfo->player->jump(-0.5);
+		}
+		else {
+			gameinfo->player->hit();
+		}
+	}
 }
 void Enemy::update() {
 	int old_x = x;
@@ -131,7 +145,7 @@ void Enemy::update() {
 		Block* block = gameinfo->map[{ (int)x, (int)y }];
 		if (block == this) return;
 		else if (block == gameinfo->player) {
-
+			((Player*)block)->hit();
 		}
 		else {
 			y = old_y;

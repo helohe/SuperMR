@@ -75,6 +75,7 @@ public:
 	int max_jump = 1;
 	bool jumpable() { return false; }
 	void reset_vel();
+	void hit();
 };
 
 class Enemy : public Block {
